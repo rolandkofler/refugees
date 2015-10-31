@@ -9,4 +9,4 @@ https://www.gjopen.com/questions/45-as-of-31-december-2015-how-many-refugees-and
 
 (CC BY 3.0) Roland Kofler, eccept the data which is UNHCR's copyright
 
-![distribution](https://raw.github.com/rolandkofler/refugees/master/distribution.png){:height="100px" width="100px"}.
+![distribution](https://raw.github.com/rolandkofler/refugees/master/distribution.png)
