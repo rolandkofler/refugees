@@ -17,7 +17,7 @@ if (reportedAmount != sum(arrivals)) break;
 
 # model parameters
 weight1= rnorm(N, mean=0.8, sd=0.3)
-weight2= rnorm(N, mean=0.6, sd=0.3)
+weight2= rnorm(N, mean=0.7, sd=0.3)
 
 
 # calculations
