@@ -11,13 +11,13 @@ October=10
 September=9                 #you got the idea
 reportedAmount=723221
 million=10^6
-N=1000;
+N=10000;
 arrivals= c( 5546,  7343,	10184,	29441,	40117,	53987,	75483,	130837,	172843,	197440)
 if (reportedAmount != sum(arrivals)) break;
 
 # model parameters
 weight1= rnorm(N, mean=0.8, sd=0.3)
-weight2= rnorm(N, mean=0.5, sd=0.3)
+weight2= rnorm(N, mean=0.6, sd=0.3)
 
 
 # calculations
