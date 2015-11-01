@@ -1,7 +1,8 @@
 #' ---
-#' title: "Refugee Analysis"
+#' title: "How plausible are more than 1MM Refugees hitting the sea shores of Europe?"
 #' author: "Roland Kofler"
 #' date: "Nov 1th, 2015"
+#' output: html_document
 #' ---
 
 #' # Rationale
@@ -53,16 +54,27 @@ monthplot(lesbosTimeseries)
 #' ## Extreme situation in Lesbos
 plot(lesbosArrivals2015/ lesbosArrivals2014[1:10], type = 'o', main="Lesbos 2015 vs Lesbos 2014")
 
-plot(lesbosArrivalsFor2Years/arrivalsFor2Years, type = 'o', main="How Lesbos became the door to Europe", xlab="month since Jan 2014", ylab="% of Lesbos Refugees to Total")
+changeRateLesbosArrivalsYoY <- lesbosArrivalsFor2Years/arrivalsFor2Years
+plot(changeRateLesbosArrivalsYoY, type = 'o', main="How Lesbos became the door to Europe", xlab="month since Jan 2014", ylab="% of Lesbos Refugees to Total")
+
+#' If you are a Refugee Maximalista -- someone who believes that more than a million will come -- its worth to take a look at 
+#' [How Greek Island behaved in Winter 2014](https://docs.google.com/spreadsheets/d/1maUaql6nBbNsDN7aee1KMVtmLWWZwas3vBdhWbDo93E/pubchart?oid=219698616&format=interactive)
+#' 
 
 #' # Monte Carlo Simulation
 #' ## model parameters
-mean1=0.6
-mean2=0.5
-standardDeviation= 0.35
+#' if refugee inflow behave the same like last year in Lesbos 
+mean1= lesbosArrivals2014[11]/lesbosArrivals2014[10]
+mean2= lesbosArrivals2014[12]/lesbosArrivals2014[10]
+
+#' we get means mean1=`r mean1`, mean2=`r  mean2`
+#' 
+#' **BIG OPEN Question: how to estimate our Standard Deviation?**
+#' If I understand the bell curve correctly I shoud set a SD so that no event lays outside of the plausible range. so not below already reportedAmount
+#' If thats the case > 1mm is so imporbable. 
+standardDeviation= 0.18
 weight1= rnorm(N, mean=mean1, sd=standardDeviation)
 weight2= rnorm(N, mean=mean2, sd=standardDeviation)
-
 
 #' ## Calculations
 arrivalsNovember = arrivals2015[October] * weight1
@@ -71,9 +83,11 @@ futureArrivals= arrivalsNovember + arrivalsDecember
 refugeesAmount = reportedAmount + futureArrivals
 plot(refugeesAmount)
 abline(h=aMillion, col="red");
+abline(h=reportedAmount, col="green");
 overAmillion = refugeesAmount > 10^6
 ProbabilityOverMillion= sum(overAmillion)/N
-print (ProbabilityOverMillion * 100)
+#' ## Probability of more than a Million Refuges
+print(ProbabilityOverMillion * 100)
 
 
 
