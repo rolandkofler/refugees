@@ -1,7 +1,7 @@
 #' ---
 #' title: "Refugee Analysis"
 #' author: "Roland Kofler"
-#' date: "Oct 31rd, 2015"
+#' date: "Nov 1th, 2015"
 #' ---
 
 #' # Rationale
@@ -18,21 +18,50 @@
 #'
 #' Found [the freaking raw data](http://data.unhcr.org/data_sources/mediterranean/data.xls?_=1446294376729)
 #' 
-#' ## Initializations
+#' Its [all about Lesbos](https://docs.google.com/spreadsheets/d/1maUaql6nBbNsDN7aee1KMVtmLWWZwas3vBdhWbDo93E/edit#gid=1996949114)! 
+#' 
+#' ## Facts
 October=10 
 September=9   #you get the idea
 reportedAmount=723221
-million=10^6
+aMillion=10^6
 N=10000;
 arrivals2014= c(3270, 4369, 7283, 17084, 16627, 26221, 28303, 33478, 33944, 23050, 13318, 9107)
 arrivals2015= c( 5546,  7343,	10184,	29441,	40117,	53987,	75483,	130837,	172843,	197440)
+lesbosArrivals2014= c(290, 413, 555, 620, 461, 824, 873, 1064, 1778, 2072, 959, 802)
+lesbosArrivals2015= c(737, 1002, 3348, 4990, 7228, 14796, 23721, 56579, 95384, 124698)
+
+syrianRefugees=4000000
+
+#' # Data Analysis
+arrivalsFor2Years <- c(arrivals2014, arrivals2015)
+arrivalTimeseries <- ts(arrivalsFor2Years, start=c(2014, 1), end=c(2015, 10), frequency=12)
+
+lesbosArrivalsFor2Years <- c(lesbosArrivals2014, lesbosArrivals2015)
+lesbosTimeseries <- ts(lesbosArrivalsFor2Years, start=c(2014, 1), end=c(2015, 10), frequency=12)
+
+#' ## Monthplots
+#' They are looking as nobody can stop the trend
+#' Lesbos is the main door to the EU, being the greatest Island of the EU only a few km ashore of Turkey it is reachable with a dingi boat
+#' 
+monthplot(arrivalTimeseries)
+monthplot(lesbosTimeseries)
+#library(forecast)
+#seasonplot(arrivalTimeseries) 
+#seasonplot(lesbosTimeseries) 
+
+#' ## Extreme situation in Lesbos
+plot(lesbosArrivals2015/ lesbosArrivals2014[1:10], type = 'o', main="Lesbos 2015 vs Lesbos 2014")
+
+plot(lesbosArrivalsFor2Years/arrivalsFor2Years, type = 'o', main="How Lesbos became the door to Europe", xlab="month since Jan 2014", ylab="% of Lesbos Refugees to Total")
 
 #' # Monte Carlo Simulation
 #' ## model parameters
-mean1=0.9
-mean2=0.6
-weight1= rnorm(N, mean=mean1, sd=0.3)
-weight2= rnorm(N, mean=mean2, sd=0.3)
+mean1=0.6
+mean2=0.5
+standardDeviation= 0.35
+weight1= rnorm(N, mean=mean1, sd=standardDeviation)
+weight2= rnorm(N, mean=mean2, sd=standardDeviation)
 
 
 #' ## Calculations
@@ -41,24 +70,11 @@ arrivalsDecember = arrivals2015[October] * weight2
 futureArrivals= arrivalsNovember + arrivalsDecember
 refugeesAmount = reportedAmount + futureArrivals
 plot(refugeesAmount)
-abline(h=million, col="red");
+abline(h=aMillion, col="red");
 overAmillion = refugeesAmount > 10^6
 ProbabilityOverMillion= sum(overAmillion)/N
 print (ProbabilityOverMillion * 100)
 
-#' # Timeseries Forecasting approach
-imputedArrivalsFor2Years <- c(arrivals2014, arrivals2015) # arrivals[October]*mean1, arrivals[October]*mean2, arrivals[October]*mean2*mean1)
-arrivalTimeseries <- ts(imputedArrivalsFor2Years, start=c(2014, 1), end=c(2015, 10), frequency=12)
 
-#' ## Monthplots
-#' They are looking as nobody can stop the trend
-monthplot(arrivalTimeseries)
-library(forecast)
-seasonplot(arrivalTimeseries) 
 
-#' ## Automated forecasting using an exponential model
-#' Don't think this makes sense, the winter is not taken into account at all.
-fit <- ets(arrivalTimeseries)
-predicted = holt(arrivalTimeseries, alpha=0.8, beta=0.2, initial="simple", h=5)
-plot(predicted)
 
